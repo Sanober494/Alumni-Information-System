@@ -1,7 +1,7 @@
 import mysql.connector
 import os
 import random
-mydb = mysql.connector.connect(host = 'localhost', user = 'root', passwd = '')    #password was intentionally omitted 
+mydb = mysql.connector.connect(host = 'localhost', user = 'root', passwd = '')    #password was intentionally omitted
 mycursor = mydb.cursor()
 if os.path.isfile('1.dat') == False:
     f = open('1.dat','wb')
