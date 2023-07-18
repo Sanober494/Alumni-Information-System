@@ -1,0 +1,271 @@
+import mysql.connector
+import os
+import random
+mydb = mysql.connector.connect(host = 'localhost', user = 'root', passwd = '')    #password was intentionally omitted 
+mycursor = mydb.cursor()
+if os.path.isfile('1.dat') == False:
+    f = open('1.dat','wb')
+    f.close()
+    mycursor.execute('Create database alumni_information_system')
+mydb = mysql.connector.connect(host = 'localhost', user = 'root', passwd = 'Miluna30/04/2004',database='Alumni_information_system')    #connecting to database
+mycursor = mydb.cursor()
+import app
+if os.path.isfile('Three.dat') == False:
+    f = open('Three.dat','wb')
+    f.close()
+    mycursor.execute('create table alumni_login_table(Registration_No int(15) primary key, Full_Name varchar(30) not null, Username varchar(15) not null, password varchar(15) not null)')
+    mycursor.execute('create table alumni_information_table (Registration_No int(15) primary key, First_name varchar(30), Last_name varchar(30), login_password varchar(15), email_id varchar(15), Phone_no varchar(15), address varchar(50), occupation varchar(30), year_of_graduation varchar(5),stream varchar(20), Pass_year char(4),Qualification varchar(20),Current_position varchar(20), DOB varchar(15), city varchar(20), country varchar(20),employment varchar(20))')
+    mycursor.execute('create table teacher_information_table (Teacher_id int(15) primary key, First_name varchar(10), last_name varchar(10),login_password varchar(15),email_id varchar(15),Phone_no varchar(15),address varchar(50))')
+    mycursor.execute('create table retired_teacher_information_table(First_name varchar(10), last_name varchar(10), email_id varchar(15),phone_no varchar(15),address varchar(50))')
+    mycursor.execute('insert into alumni_login_table(registration_no,full_name,username,password)\
+                                  values(%d,"%s","%s",%d)'%(2,"Admin","Admin1",123))
+    mycursor.execute('insert into alumni_login_table(registration_no,full_name,username,password)\
+                                   values(%d,"%s","%s",%d)'%(1,"Student1","Stu1",771))
+    mycursor.execute('insert into alumni_login_table(registration_no,full_name,username,password)\
+                                  values(%d,"%s","%s",%d)'%(3,"Alumni1","Al1",913))
+print('------------WELCOME to the ALUMNI INFORMATION SYSTEM------------')
+print()
+print('SIGN UP - enter 1')
+print('LOGIN - enter 2')
+print()
+log = int(input('Enter your choice:'))
+if log == 1:
+    print()
+    fname = input('Enter first name:')
+    lname = input('Enter last name:')
+    name = fname+' '+lname
+    nam = fname+lname
+    reg = random.randint(1,999999)
+    print('Enter 1 for student, 2 for staff, 3 for alumni')
+    print()
+    x = input('Enter:')
+    l = []
+    mycursor.execute('Select registration_no from alumni_login_table')
+    for i in mycursor:
+        l+=[i[0]]
+    while str(reg).startswith(x) == False or reg in l:
+        reg = random.randint(1,999999)
+    else:
+        print('Registration is:',reg)
+        passw = nam[3:-1] + str(reg)[len(str(reg))//2]
+        print('Password is:',passw)
+        use = name[0:len(nam)//2]
+        print('Username is:',use)
+        mycursor.execute('insert into alumni_login_table(registration_no,full_name,username,password)\
+                                        values(%d,"%s","%s","%s")'%(reg,name,use,passw))
+        mydb.commit()
+    print()
+elif log == 2:
+    print('Please select one of the following:')
+    print()
+    print('• If you are a student- Enter 1')
+    print('• If you are a staff member- Enter 2')
+    print('• If you are an alumnus- Enter 3')
+    print()
+    choice = int(input('Enter your choice:'))
+    print()
+    if choice == 1:                                   
+        print()
+        print('--LOGIN--')
+        user = input('Enter your username:')
+        passwd = input('Enter your password:')
+        print()
+        sec = app.login(user,passwd)
+        print()
+        if sec!=0:
+            print('MENU')
+            print()
+            print('1. Search for an alumni')
+            print('2. LOGOUT')
+            print()
+            while True:
+                x = int(input('Enter your choice:'))
+                print()
+                if x == 1:
+                    app.alumnussearch()
+                    print()
+                elif x == 2:
+                    print()
+                    print('Thank You! Logging out')
+                    break
+                else:
+                    print('Incorrect option! Enter a valid choice')
+                    print()
+    elif choice == 2:
+        print()
+        print('--LOGIN--')
+        print()
+        user = input('Enter your username:')
+        passwd = input('Enter your password:')
+        print()
+        sec = app.stafflogin(user,passwd)
+        print()
+        if sec != 0:
+            print('MENU')
+            print()
+            print('1. Modify a table')
+            print('2. Remove a record from a table.')
+            print('3. Search for a certain student, alumnus or staff')
+            print('4. Display table records')
+            print('5. Insert into retired_teacher_information_table')
+            print('6. LOGOUT')
+            print()
+            while True:
+                x = int(input('Enter your choice:'))
+                print()
+                if x == 1:
+                    print('Which table do you want to modify?')
+                    print()
+                    print('''1.Alumni login table\n
+2.Teacher information table\n
+3.Retired teacher information table''')
+                    print()
+                    while True:
+                        y = int(input('Enter the number next to the desired table to be modified:'))
+                        print()
+                        if y == 1:
+                            app.modifyregister()
+                            print()
+                            break
+                        elif y == 2:
+                            app.modifyteacher()
+                            print()
+                            break
+                        elif y == 3:
+                            app.modifyretire()
+                            print()
+                            break
+                        else:
+                            print('Incorrect option! Enter a valid option')
+                            print()
+                elif x == 2:
+                        print('From which table do you want to remove a record from?')
+                        print()
+                        print('''1.Alumni login table\n
+2.Teacher information table to retired teacher information table\n
+3.Retired teacher information table\n
+4.Alumni_information_table''')
+                        print()
+                        while True:
+                            y = int(input('Enter the number next to the desired table to be removed:'))
+                            print()
+                            if y == 1:
+                                app.remove_login()
+                                print()
+                                break
+                            elif y == 2:
+                                app.remove_teacher()
+                                print()
+                                break
+                            elif y == 3:
+                                app.remove_retire()
+                                print()
+                                break
+                            elif y == 4:
+                                app.remove_alumni()
+                                print()
+                                break
+                            else:
+                                print('Enter valid option')
+                                print()
+                elif x == 3:
+                        print('From which table do you want to search for a record from?')
+                        print()
+                        print('''1.Alumni login table\n
+2.Teacher information table to retired teacher information table\n
+3.Retired teacher information table\n
+4.Alumni_information_table''')
+                        print()
+                        while True:
+                            y = int(input('Enter the number next to the desired table to be searched:'))
+                            print()
+                            if y == 1:
+                                app.loginsearch()
+                                print()
+                                break
+                            elif y == 2:
+                                app.remove_teacher()
+                                print()
+                                break
+                            elif y == 3:
+                                app.remove_retire()
+                                print()
+                                break
+                            elif y == 4:
+                                app.alumnisearch()
+                                print()
+                                break
+                            else:
+                                print('Enter valid option')
+                                print()
+                elif x == 4:
+                    print()
+                    app.display_table()
+                    print()
+                elif x == 5:
+                    print()
+                    app.insert_retired()
+                    print()
+                elif x == 6:
+                    print()
+                    print('Thank you! Logging out')
+                    break
+                else:
+                    print('Incorrect option! Enter a valid option.')
+                    print()
+    elif choice == 3:
+        print()
+        print('--LOGIN--')
+        print()
+        user = input('Enter your username:')
+        passwd = input('Enter your password:')
+        print()
+        sec = app.alumnilogin(user,passwd)
+        print()
+        if sec != 0:
+            print('MENU')
+            print()
+            print('1. Register yourself')
+            print('2. modify your data')
+            print('3. Remove your data')
+            print('4. Search for a certain alumnus or staff')
+            print('5. LOGOUT')
+            print()
+            while True:
+                x = int(input('Enter your choice:'))
+                print()
+                if x == 1:
+                    app.insertalumni()
+                    print()
+                elif x == 2:
+                    app.modifyalumni()
+                    print()
+                elif x == 3:
+                    app.remove_alumni()
+                    print()
+                elif x == 4:
+                    print('''Which table do you want to search?\n
+1. Alumni information table\n
+2.Teacher information table''')
+                    print()
+                    while True:
+                        y = int(input('Enter your choice:'))
+                        print()
+                        if y == 1:
+                            app.alumnussearch()
+                            print()
+                            break
+                        elif y == 2:
+                            app.staffsearch()
+                            print()
+                            break
+                elif x == 5:
+                    print('Thank you')
+                    break
+                else:
+                    print('Enter a valid choice')
+                    print()
+
+
+
+
