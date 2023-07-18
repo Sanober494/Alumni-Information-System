@@ -1,0 +1,421 @@
+import mysql.connector
+mydb = mysql.connector.connect(host = 'localhost', user = 'root', passwd ='',database = 'Alumni_information_system')  #password was intentionally omitted
+mycursor = mydb.cursor()
+def login(user,passwd):
+    mycursor.execute('select password from alumni_login_table where username="%s"'%(user))
+    for i in mycursor:
+        if i[0] == passwd:
+            print('LOGIN SUCCESSFULL')
+            print()
+            break
+    else:
+        print('INVALID USERNAME OR PASSWORD')
+        print()
+        return 0
+def stafflogin(user,passwd):
+    mycursor.execute('select password from alumni_login_table where username="%s"'%(user)) 
+    for i in mycursor:
+        if i[0] == passwd:
+            print('LOGIN SUCCESSFULL')
+            print()
+            break
+    else:
+        print('INVALID USERNAME OR PASSWORD')
+        print()
+        return 0
+def alumnilogin(user,passwd):
+    mycursor.execute('select password from alumni_login_table where username="%s"'%(user))
+    for i in mycursor:
+        if i[0] == passwd:
+            print('LOGIN SUCCESSFULL')
+            print()
+            break
+    else:
+        print('INVALID USERNAME OR PASSWORD')
+        print()
+        return 0
+def insertalumni():                                                #registers alumni by taking their info
+    print('Hi we are very excited to have on board our alumni program. please provide us with the following details.')
+    print()
+    rid = int(input('Enter your registration id:'))
+    first = input('Enter your first name:')
+    last = input('Enter your last name:')
+    passwd = input('Enter your login password:')
+    mail = input('Enter your email address:')
+    phone = input('Enter your phone no.:')
+    add = input('Enter your address:')
+    occ = input('Enter your occupation:')
+    year = input('Enter your year of graduation:')
+    stream = input('Enter your stream:')
+    passy = input('Enter your passing year:')
+    qual = input('Enter your qualification:')
+    current = input('Enter your current position:')
+    dob = input('Enter your date of birth:')
+    city = input('Enter your city:')
+    country = input('Enter your country:')
+    employment = input('Enter your employment:')
+    sql = 'insert into alumni_information_table(registration_no,first_name,last_name,login_password,email_id,phone_no,address,occupation,year_of_graduation,stream,pass_year,qualification,current_position,dob,city,country,employment)\
+           values(%d,"%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")'%(rid,first,last,passwd,mail,phone,add,occ,year,stream,passy,qual,current,dob,city,country,employment)
+    mycursor.execute(sql)
+    mydb.commit()
+    print()
+    print('Information successfully saved')
+    print()
+def modifyteacher():                                                                   #modifies teacher table
+    regid = int(input('Enter the current registration id of the record to be modified:'))
+    print()
+    reg = int(input('Enter the new registration no.:'))
+    first = input('Enter the new first name:')
+    last = input('Enter the new last name:')
+    passwd = input('Enter the new password:')
+    email = input('Enter the E-mail id:')
+    phone = input('Enter the new phone no.:')
+    add = input('Enter the new address:')
+    mycursor.execute('Update teacher_information_table set teacher_id = %d,first_name = "%s", last_name = "%s",login_password = "%s", email_id = "%s", phone_no ="%s", address = "%s" where Teacher_id = %d' %(reg,first,last,passwd,email,phone,add,regid))
+    mydb.commit()
+    print()
+    print('Modification complete')
+    print()
+    print('Dont forget to modify the same for alumni_login_table')
+    print()
+    print('modifying alumni')
+    print()
+    modifyregister()
+    print()
+def modifyretire():                                       #modifies retired teachers table
+    phone = int(input('Enter the Phone no. of the record to be modified:'))
+    print()
+    first = input('Enter the new first name:')
+    last = input('Enter the new last name:')
+    email = input('Enter the new email id:')
+    phoneno = input('Enter the new phone no.:')
+    add = input('Enter the new address:')
+    print()
+    mycursor.execute('Update retired_teacher_information_table set first_name = "%s", last_name = "%s", email_id = "%s", phone_no = "%s", address = "%s" where phone_no = "%s"' %(first,last,email,phoneno,add,phone)) 
+    mydb.commit()
+    print('Modification successful')
+    print()
+def modifyalumni():                                    #modifies alumni table
+    rid = int(input('Enter your current registration no.:'))
+    print()
+    print('If there is no change in the details just enter the current details.')
+    print()
+    reg = int(input('Enter the new registration no.:'))
+    first = input('Enter your first name:')
+    last = input('Enter your last name:')
+    passwd = input('Enter your password:')
+    email = input('Enter your email id:')
+    ph = input('Enter your phone no.:')
+    add = input('Enter your address:')
+    occ = input('Enter your occupartion:')
+    year = input('Enter your year of graduation:')
+    stream = input('Enter your stream:')
+    passy = input('Enter your pass year:')
+    qual = input('Enter your qualification:')
+    current = input('Enter your current position:')
+    dob = input('Enter your date of birth:')
+    city = input('Enter your city:')
+    country = input('Enter your country:')
+    employment = input('Enter your employment:')
+    mycursor.execute('Update alumni_information_table set registration_no = %d,first_name = "%s",full_name = "%s",login_password = "%s",email_id = "%s",phone_no = "%s",address = "%s",occupation = "%s",year_of_graduation = "%s",stream = "%s",pass_year = "%s",qualification = "%s",current_position = "%s",dob,city = "%s",country = "%s",employment = "%s" where registration_no = %d'%(reg,first,last,passwd,email,ph,add,occ,year,stream,passy,qual,current,dob,city,country,employment,rid))
+    mydb.commit()
+    print()
+    print('Modification complete')
+    print()
+    print('Modifying alumni')
+    print()
+    modifyregister()
+    print()
+def modifyregister():                                        #modifies alumni login table
+    regid = int(input('Enter the old registration no.:'))
+    print()
+    reg = int(input('Enter the registration no.:'))
+    first = input('Enter the first name of the member:')
+    last = input('Enter the last name of the member:')
+    name = first+' '+last
+    user = input('Enter the username:')
+    passwd = input('Enter the password:')
+    mycursor.execute('update alumni_login_table set registration_no = %d, full_name ="%s", username ="%s", password = "%s" where registration_no =%d'%(reg,name,user,passwd,regid))
+    mydb.commit()
+    print()
+    print('Modification complete')
+    print()
+    print('Make sure to modify the data in related tables too!')
+    print()
+def insert_retired():            #takes data about retired teachers
+    first = input('Enter the first name:')
+    last = input('Enter the last name:')
+    email = input('Enter the email-id:')
+    ph = input('Enter the phone no.:')
+    add = input('Enter the phone no.:')
+    mycursor.execute('insert into retired_teacher_information_table(first_name,last_name,email_id,phone_no,address)\
+                      values("%s","%s","%s","%s","%s")'%(first,last,email,ph,add))
+    mydb.commit()
+    print()
+    print('Record inserted')
+    print()
+def remove_teacher():                   #deleting records from teachers table
+    reg = int(input('Enter the registration no. of record to be removed:'))
+    print()
+    mycursor.execute('Select first_name,last_name,email_id,phone_no,address from teacher_information_table where teacher_id = %d'%(reg))
+    for i in mycursor:
+        f,l,e,p,a = i
+    mycursor.execute('insert into retired_teacher_information_table(first_name,last_name,email_id,phone_no,address)\
+                      values("%s","%s","%s","%s","%s")'%(f,l,e,p,a))
+    mydb.commit()
+    mycursor.execute('delete from teacher_information_table where teacher_id = %d'%(reg))
+    mydb.commit()
+    print()
+    print('Record removed and inserted into retired_teacher_information_table')
+    print()
+def remove_retire():                 #deletes records from retired teacher table
+    reg = int(input('Enter the mobile_no. of record to be removed:'))
+    print()
+    mycursor.execute('delete from retired_teacher_information_table where phone_no = %d'%(reg))
+    mydb.commit()
+    print('Record removed')
+    print()
+    print('Removing from login')
+    print()
+    remove_login()
+    print()
+def remove_alumni():            #deletes from alumni info table
+    reg = int(input('Enter the registration no. of record to be removed:'))
+    mycursor.execute('delete from alumni_information_table where registration_no = %d'%(reg))
+    mydb.commit()
+    print('Record removed')
+    print('Removing from login')
+    remove_login()
+def remove_login():             #deletes from login table
+    reg = int(input('Enter the registration no. of record to be removed:'))
+    mycursor.execute('delete from alumni_login_table where registration_no = %d'%(reg))
+    mydb.commit()
+    print('Record removed')
+    print('Make sure to remove the record from related tables too!')
+def alumnisearch():            #searching for alumni on the following basis. function also prints search results
+    print('On what basis would u like to search?')
+    print('''1. Registration no.\
+2.Last name\
+3. occupation\
+4. year of graduation\
+5. stream\
+6. qualification\
+7.Exit ''')
+    while True:
+        y = int(input('Enter the number next to the desired option:'))
+        if y == 1:
+            reg = int(input('Enter the registration no. of record to be searched for:'))
+            mycursor.execute('Select * from alumni_information_table where registration_no = %d'%(reg))
+            print('registration_no\tfirst_name\tlast_name\tlogin_password\temail_id\tphone_no\taddress\toccupation\tyear_of_graduation\tstream\tpass_year\tqualification\tcurrent_position\tdob\tcity\tcountry\temployment')
+            for i in mycursor:
+                for j in i:
+                    print(j,end='\t')
+                print()
+        elif y == 2:
+            l = input('Enter the last name of record to be searched for:')
+            mycursor.execute('Select * from alumni_information_table where last_name = "%s"'%(l))
+            print('registration_no\tfirst_name\tlast_name\tlogin_password\temail_id\tphone_no\taddress\toccupation\tyear_of_graduation\tstream\tpass_year\tqualification\tcurrent_position\tdob\tcity\tcountry\temployment')
+            for i in mycursor:
+                for j in i:
+                    print(j,end='\t')
+                print()
+        elif y == 3:
+            occ = input('Enter the occupation of record to be searched for:')
+            mycursor.execute('Select * from alumni_information_table where occupation = "%s"'%(occ))
+            print('registration_no\tfirst_name\tlast_name\tlogin_password\temail_id\tphone_no\taddress\toccupation\tyear_of_graduation\tstream\tpass_year\tqualification\tcurrent_position\tdob\tcity\tcountry\temployment')
+            for i in mycursor:
+                for j in i:
+                    print(j,end='\t')
+                print()
+        elif y == 4:
+            y = input('Enter the year of graduation of record to be searched for:')
+            mycursor.execute('Select * from alumni_information_table where year_of_graduation = "%s"'%(reg))
+            print('registration_no\tfirst_name\tlast_name\tlogin_password\temail_id\tphone_no\taddress\toccupation\tyear_of_graduation\tstream\tpass_year\tqualification\tcurrent_position\tdob\tcity\tcountry\temployment')
+            for i in mycursor:
+                for j in i:
+                    print(j,end='\t')
+                print()
+        elif y == 5:
+            stream = input('Enter the stream of record to be searched for:')
+            mycursor.execute('Select * from alumni_information_table where stream = "%s"'%(stream))
+            print('registration_no\tfirst_name\tfull_name\tlogin_password\temail_id\tphone_no\taddress\toccupation\tyear_of_graduation\tstream\tpass_year\tqualification\tcurrent_position\tdob\tcity\tcountry\temployment')
+            for i in mycursor:
+                for j in i:
+                    print(j,end='\t')
+                print()
+        elif y == 6:
+            qual = input('Enter the qualification of record to be searched for:')
+            mycursor.execute('Select * from alumni_information_table where qualification = "%s"'%(qual))
+            print('registration_no\tfirst_name\tlast_name\tlogin_password\temail_id\tphone_no\taddress\toccupation\tyear_of_graduation\tstream\tpass_year\tqualification\tcurrent_position\tdob\tcity\tcountry\temployment')
+            for i in mycursor:
+                for j in i:
+                    print(j,end='\t')
+                print()
+        elif y == 7:
+            print('Exiting search')
+            break
+        else:
+            print('Enter valid option')
+def loginsearch():                                         #searching for alumni login on the following basis. function also prints search results
+     print('On what basis would u like to search?')
+     print('''1. Registration no.\
+2.full name\
+3.username\
+4.Exit''')
+     while True:
+         y = int(input('Enter the number next to the desired option:'))
+         if y == 1:
+             reg = int(input('Enter the registration no. of record to be searched for:'))
+             mycursor.execute('Select * from alumni_login_table where registration_no = %d'%(reg))
+             print('registration_no\tfull_name\tusername\tpassword')
+             for i in mycursor:
+                 for j in i:
+                     print(j,end='\t')
+                 print()
+         elif y ==2:
+             name = input('Enter the name of record to be searched for:')
+             mycursor.execute('Select * from alumni_login_table where full_name = "%s"'%(name))
+             print('registration_no\tfull_name\tusername\tpassword')
+             for i in mycursor:
+                 for j in i:
+                     print(j,end='\t')
+                 print()
+         elif y ==3:
+             name = input('Enter the username of record to be searched for:')
+             mycursor.execute('Select * from alumni_login_table where username = "%s"'%(name))
+             print('registration_no\tfull_name\tusername\tpassword')
+             for i in mycursor:
+                 for j in i:
+                     print(j,end='\t')
+                 print()
+         elif y == 4:
+             print('Exiting search')
+             break
+         else:
+             print('Enter valid option')
+def retiresearch():                                          #searching for retired teachers on the following basis. function also prints search results
+    print('On what basis would u like to search?')
+    print('''1. Registration no.\
+2.full name\
+3.username\
+4.Exit''')
+    while True:
+         y = int(input('Enter the number next to the desired option:'))
+         if y == 1:
+             reg = int(input('Enter the registration no. of record to be searched for:'))
+             mycursor.execute('Select * from alumni_login_table where registration_no = %d'%(reg))
+             print('registration_no\tfull_name\tusername\tpassword')
+             for i in mycursor:
+                 for j in i:
+                     print(j,end='\t')
+                 print()
+         elif y ==2:
+             name = input('Enter the name of record to be searched for:')
+             mycursor.execute('Select * from alumni_login_table where full_name = "%s"'%(name))
+             print('registration_no\tfull_name\tusername\tpassword')
+             for i in mycursor:
+                 for j in i:
+                     print(j,end='\t')
+                 print()
+         elif y ==3:
+             name = input('Enter the username of record to be searched for:')
+             mycursor.execute('Select * from alumni_login_table where username = "%s"'%(name))
+             print('registration_no\tfull_name\tusername\tpassword')
+             for i in mycursor:
+                 for j in i:
+                     print(j,end='\t')
+                 print()
+         elif y == 4:
+             print('Exiting search')
+             break
+         else:
+             print('Enter a valid option')
+def staffsearch():
+    name = input('Enter the teacher\'s Last Name:')
+    print('First name\tLast name\temail id\tPhone no.\taddress')
+    mycursor.execute('Select first_name,last_name,email_id,phone_no,address from teacher_information_table where last_name = "%s"'%(name))
+    for i in mycursor:
+        for j in i:
+            print(j,end='\t')
+        print()
+def alumnussearch():            #searching for alumni on the following basis. function also prints search results
+    print('On what basis would u like to search?')
+    print('''1.Last name\
+2. occupation\
+3. year of graduation\
+4. stream\
+5. qualification\
+6.Exit''')
+    while True:
+        y = int(input('Enter the number next to the desired option:'))
+        if y == 1:
+            l = input('Enter the last name of record to be searched for:')
+            mycursor.execute('Select first_name,last_name,email_id,phone_no,address,occupation,year_of_graduation,stream,pass_year,qualification,current_position,DOB,city,country,employment from alumni_information_table where last_name = "%s"'%(l))
+            print('first_name\tlast_name\temail_id\tphone_no\taddress\toccupation\tyear_of_graduation\tstream\tpass_year\tqualification\tcurrent_position\tdob\tcity\tcountry\temployment')
+            for i in mycursor:
+                for j in i:
+                    print(j,end='\t')
+                print()
+        elif y == 2:
+            occ = input('Enter the occupation of record to be searched for:')
+            mycursor.execute('Select first_name,last_name,email_id,phone_no,address,occupation,year_of_graduation,stream,pass_year,qualification,current_position,DOB,city,country,employment from alumni_information_table where occupation = "%s"'%(occ))
+            print('first_name\tlast_name\temail_id\tphone_no\taddress\toccupation\tyear_of_graduation\tstream\tpass_year\tqualification\tcurrent_position\tdob\tcity\tcountry\temployment')
+            for i in mycursor:
+                for j in i:
+                    print(j,end='\t')
+                print()
+        elif y == 3:
+            y = input('Enter the year of graduation of record to be searched for:')
+            mycursor.execute('Select first_name,last_name,email_id,phone_no,address,occupation,year_of_graduation,stream,pass_year,qualification,current_position,DOB,city,country,employment from alumni_information_table where year_of_graduation = "%s"'%(reg))
+            print('first_name\tlast_name\temail_id\tphone_no\taddress\toccupation\tyear_of_graduation\tstream\tpass_year\tqualification\tcurrent_position\tdob\tcity\tcountry\temployment')
+            for i in mycursor:
+                for j in i:
+                    print(j,end='\t')
+                print()
+        elif y == 4:
+            stream = input('Enter the stream of record to be searched for:')
+            mycursor.execute('Select first_name,last_name,email_id,phone_no,address,occupation,year_of_graduation,stream,pass_year,qualification,current_position,DOB,city,country,employment from alumni_information_table where stream = "%s"'%(stream))
+            print('first_name\tfull_name\temail_id\tphone_no\taddress\toccupation\tyear_of_graduation\tstream\tpass_year\tqualification\tcurrent_position\tdob\tcity\tcountry\temployment')
+            for i in mycursor:
+                for j in i:
+                    print(j,end='\t')
+                print()
+        elif y == 5:
+            qual = input('Enter the qualification of record to be searched for:')
+            mycursor.execute('Select first_name,last_name,email_id,phone_no,address,occupation,year_of_graduation,stream,pass_year,qualification,current_position,DOB,city,country,employment from alumni_information_table where qualification = "%s"'%(qual))
+            print('first_name\tlast_name\temail_id\tphone_no\taddress\toccupation\tyear_of_graduation\tstream\tpass_year\tqualification\tcurrent_position\tdob\tcity\tcountry\temployment')
+            for i in mycursor:
+                for j in i:
+                    print(j,end='\t')
+                print()
+        elif y == 6:
+            print('Exiting search')
+            break
+        else:
+            print('Enter valid option')
+def display_table():
+    print('Which table would you like to display?')
+    print('1.Alumni_login_table')
+    print('2.Alumni_information_table')
+    print('3.Teacher_information_table')
+    print('4.Retired_Teacher_information_table')
+    y = int(input('Enter your choice:'))
+    if y == 1:
+        print('Registration_no\tFull_name\tUsername\tPassword')
+        mycursor.execute('Select * from alumni_login_table')
+        for i in mycursor:
+            for j in i:
+                print(j,end = '\t\t')
+            print()
+    elif y == 2:
+        mycursor.execute('Select * from alumni_information_table')
+        for i in mycursor:
+            print(i)
+    elif y == 3:
+        mycursor.execute('Select * from teacher_information_table')
+        for i in mycursor:
+            print(i)
+    elif y==4:
+        mycursor.execute('Select * from retired_teacher_information_table')
+        for i in mycursor:
+            print(i)
